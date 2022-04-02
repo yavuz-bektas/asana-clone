@@ -1,0 +1,23 @@
+{
+  "name": "asana-clone",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start" : "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yavuz-bektas/asana-clone.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yavuz-bektas/asana-clone/issues"
+  },
+  "homepage": "https://github.com/yavuz-bektas/asana-clone#readme",
+  "dependencies": {
+    "express": "^4.17.3"
+  }
+}
