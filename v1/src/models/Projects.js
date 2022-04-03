@@ -11,4 +11,13 @@ const ProjectSchema = new mongoose.Schema(
   { timestamps: true, versionKey: false }
 );
 
+ProjectSchema.pre("save", (next) => {
+  // console.log("öncesi", object);
+  next();
+});
+
+ProjectSchema.post("save", (object) => {
+  console.log("sonrasi", object);
+});
+
 module.exports = mongoose.model("project", ProjectSchema);
