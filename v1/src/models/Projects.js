@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const logger = require("../scripts/logger/Projects");
 
 const ProjectSchema = new mongoose.Schema(
   {
@@ -11,13 +12,16 @@ const ProjectSchema = new mongoose.Schema(
   { timestamps: true, versionKey: false }
 );
 
-ProjectSchema.pre("save", (next) => {
-  // console.log("öncesi", object);
-  next();
-});
+// ProjectSchema.pre("save", (next, object) => {
+//   console.log("öncesi", object);
+//   next();
+// });
 
-ProjectSchema.post("save", (object) => {
-  console.log("sonrasi", object);
+ProjectSchema.post("save", (doc) => {
+  logger.log({
+    level: "info",
+    message: doc,
+  });
 });
 
 module.exports = mongoose.model("project", ProjectSchema);

@@ -3,7 +3,7 @@ const helmet = require("helmet");
 const config = require("./config");
 const loaders = require("./loaders");
 
-const { Routes } = require("./routes");
+const { ProjectRouter, UsersRouter } = require("./routes");
 
 config();
 loaders();
@@ -15,5 +15,6 @@ app.use(express.urlencoded({ extended: true }));
 
 app.listen(process.env.APP_PORT, () => {
   console.log("Servis app is listening on port 3000");
-  app.use("/projects", Routes);
+  app.use("/projects", ProjectRouter);
+  app.use("/users", UsersRouter);
 });

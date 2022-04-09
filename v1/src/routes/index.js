@@ -1,1 +1,2 @@
-module.exports.Routes = require("./Projects");
+module.exports.ProjectRouter = require("./Projects");
+module.exports.UsersRouter = require("./Users");
