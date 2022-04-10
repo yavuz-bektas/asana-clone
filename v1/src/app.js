@@ -1,7 +1,7 @@
 const express = require("express");
 const helmet = require("helmet");
-const config = require("./config");
-const loaders = require("./loaders");
+const config = require("./config"); //env gibi bağımlılıkları çağır
+const loaders = require("./loaders"); // mongodb connection çağır
 
 const { ProjectRouter, UsersRouter } = require("./routes");
 

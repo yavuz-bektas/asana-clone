@@ -1,4 +1,6 @@
 const { insert, list, loginUser } = require("../services/Users");
+const projectService = require("../services/Projects");
+
 const httpStatus = require("http-status");
 const {
   passwordToHash,
@@ -50,8 +52,22 @@ const index = (req, res) => {
     });
 };
 
+const projectList = (req, res) => {
+  projectService
+    .list({ user_id: req.user?._id })
+    .then((result) => {
+      res.status(httpStatus.OK).send(result);
+    })
+    .catch((err) => {
+      res
+        .status(httpStatus.INTERNAL_SERVER_ERROR)
+        .send({ err: "Projeleri getirirken hata oldu" });
+    });
+};
+
 module.exports = {
   create,
   index,
   login,
+  projectList,
 };
