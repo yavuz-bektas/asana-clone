@@ -1,7 +1,9 @@
-const { insert, list, loginUser } = require("../services/Users");
+const { insert, list, loginUser, modify } = require("../services/Users");
 const projectService = require("../services/Projects");
-
 const httpStatus = require("http-status");
+const uuid = require("uuid");
+const eventEmitter = require("../scripts/events/eventEmitter");
+
 const {
   passwordToHash,
   generateAccessToken,
@@ -65,9 +67,46 @@ const projectList = (req, res) => {
     });
 };
 
+const resetPassword = (req, res) => {
+  const newPwd = uuid.v1()?.split("-")[0] || new Date().getTime();
+  modify({ email: req.body.email }, { password: passwordToHash(newPwd) })
+    .then((updatedUser) => {
+      if (!updatedUser)
+        return res
+          .status(httpStatus.NOT_FOUND)
+          .send({ error: "Böyle bir kullanıcı bulunamadı." });
+      eventEmitter.emit("send_email", {
+        from: '"Fred Foo 👻" <foo@example.com>', // sender address
+        to: updatedUser.email, // list of receivers
+        subject: "Şifre Sıfırlama", // Subject line
+        html: "yeni şifreniz --> " + newPwd, // html body
+      });
+      res.status(httpStatus.OK).send({
+        message: "şifre sıfırlama maili gönderildi",
+      });
+    })
+    .catch((err) => {
+      res
+        .status(httpStatus.INTERNAL_SERVER_ERROR)
+        .send({ error: " şifre sıfırlama sırasında bi hata oldu" });
+    });
+};
+
+const update = (req, res) => {
+  modify({ _id: req.user?._id }, req.body)
+    .then((updatedUser) => {
+      res.status(httpStatus.OK).send(updatedUser);
+    })
+    .catch((err) => {
+      res.status(httpStatus.INTERNAL_SERVER_ERROR).send(err);
+    });
+};
+
 module.exports = {
   create,
   index,
   login,
   projectList,
+  resetPassword,
+  update,
 };

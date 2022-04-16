@@ -2,11 +2,12 @@ const express = require("express");
 const helmet = require("helmet");
 const config = require("./config"); //env gibi bağımlılıkları çağır
 const loaders = require("./loaders"); // mongodb connection çağır
-
+const events = require("./scripts/events");
 const { ProjectRouter, UsersRouter } = require("./routes");
 
 config();
 loaders();
+events();
 
 const app = express();
 app.use(express.json());
