@@ -109,6 +109,17 @@ const update = (req, res) => {
     });
 };
 
+const changePassword = (req, res) => {
+  req.body.password = passwordToHash(req.body.password);
+  modify({ _id: req.user?._id }, req.body)
+    .then((updatedUser) => {
+      res.status(httpStatus.OK).send(updatedUser);
+    })
+    .catch((err) => {
+      res.status(httpStatus.INTERNAL_SERVER_ERROR).send(err);
+    });
+};
+
 const remove = (req, res) => {
   if (!req.params?.id) {
     res
@@ -142,4 +153,5 @@ module.exports = {
   resetPassword,
   update,
   remove,
+  changePassword,
 };
