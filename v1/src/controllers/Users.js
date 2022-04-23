@@ -1,4 +1,10 @@
-const { insert, list, loginUser, modify } = require("../services/Users");
+const {
+  insert,
+  list,
+  loginUser,
+  modify,
+  removeUser,
+} = require("../services/Users");
 const projectService = require("../services/Projects");
 const httpStatus = require("http-status");
 const uuid = require("uuid");
@@ -69,6 +75,7 @@ const projectList = (req, res) => {
 
 const resetPassword = (req, res) => {
   const newPwd = uuid.v1()?.split("-")[0] || new Date().getTime();
+  console.log(newPwd);
   modify({ email: req.body.email }, { password: passwordToHash(newPwd) })
     .then((updatedUser) => {
       if (!updatedUser)
@@ -102,6 +109,31 @@ const update = (req, res) => {
     });
 };
 
+const remove = (req, res) => {
+  if (!req.params?.id) {
+    res
+      .status(httpStatus.BAD_REQUEST)
+      .send({ message: "ID bilgisi eksiktir veya hatalıdır" });
+  }
+  removeUser(req.params?.id)
+    .then((deletedUser) => {
+      if (!deletedUser) {
+        return res
+          .status(httpStatus.NOT_FOUND)
+          .send({ message: "Böyle bir kayıt yoktur" });
+      } else {
+        res
+          .status(httpStatus.OK)
+          .send({ message: "kullanıcı silindi. ==>" + deletedUser.full_name });
+      }
+    })
+    .catch((err) => {
+      res
+        .status(httpStatus.INTERNAL_SERVER_ERROR)
+        .send({ message: "silme işlemi sırasında bir sorun oldu" });
+    });
+};
+
 module.exports = {
   create,
   index,
@@ -109,4 +141,5 @@ module.exports = {
   projectList,
   resetPassword,
   update,
+  remove,
 };

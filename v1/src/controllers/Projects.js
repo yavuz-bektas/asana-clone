@@ -1,4 +1,4 @@
-const { insert, modify, list } = require("../services/Projects");
+const { insert, modify, list, deleteProject } = require("../services/Projects");
 const httpStatus = require("http-status");
 const res = require("express/lib/response");
 const { send } = require("express/lib/response");
@@ -41,8 +41,32 @@ const update = (req, res, next) => {
     });
 };
 
+const remove = (req, res) => {
+  if (!req.params?.id) {
+    res
+      .status(httpStatus.BAD_REQUEST)
+      .send({ message: "ID bilgisi eksiktir veya hatalıdır" });
+  }
+  deleteProject(req.params?.id)
+    .then((deletedProject) => {
+      if (!deletedProject) {
+        return res
+          .status(httpStatus.NOT_FOUND)
+          .send({ message: "Böyle bir kayıt yoktur" });
+      } else {
+        res.status(httpStatus.OK).send({ message: "proje silindi." });
+      }
+    })
+    .catch((err) => {
+      res
+        .status(httpStatus.INTERNAL_SERVER_ERROR)
+        .send({ message: "silme işlemi sırasında bir sorun oldu" });
+    });
+};
+
 module.exports = {
   create,
   index,
   update,
+  remove,
 };

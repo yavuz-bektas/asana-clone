@@ -6,6 +6,7 @@ const {
   projectList,
   resetPassword,
   update,
+  remove,
 } = require("../controllers/Users");
 const router = express.Router();
 const authenticateToken = require("../middlewares/authenticate");
@@ -23,4 +24,5 @@ router
   .route("/reset-password")
   .post(validate(schemas.resetPasswordValidation), resetPassword);
 
+router.route("/:id").delete(authenticateToken, remove);
 module.exports = router;

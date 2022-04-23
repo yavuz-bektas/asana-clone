@@ -17,8 +17,13 @@ const modify = (id, data) => {
   return mydata;
 };
 
+const deleteProject = (id) => {
+  return Project.findByIdAndDelete(id);
+};
+
 module.exports = {
   insert,
   list,
   modify,
+  deleteProject,
 };
