@@ -5,7 +5,7 @@ var UserSchema = new mongoose.Schema(
     full_name: String,
     password: String,
     email: String,
-    profil_image: String,
+    profile_image: String,
   },
   { timestamps: true, versionKey: false }
 );

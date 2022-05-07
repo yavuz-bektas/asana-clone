@@ -8,6 +8,7 @@ const {
   update,
   remove,
   changePassword,
+  updateProfileImage,
 } = require("../controllers/Users");
 const router = express.Router();
 const authenticateToken = require("../middlewares/authenticate");
@@ -32,6 +33,10 @@ router
     validate(schemas.changePasswordValidation),
     changePassword
   );
+
+router
+  .route("/update-profile-image")
+  .post(authenticateToken, updateProfileImage);
 
 router.route("/:id").delete(authenticateToken, remove);
 module.exports = router;

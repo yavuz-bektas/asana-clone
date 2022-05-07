@@ -9,12 +9,14 @@ const projectService = require("../services/Projects");
 const httpStatus = require("http-status");
 const uuid = require("uuid");
 const eventEmitter = require("../scripts/events/eventEmitter");
+const path = require("path");
 
 const {
   passwordToHash,
   generateAccessToken,
   generateRefreshToken,
 } = require("../scripts/utils/helper");
+const res = require("express/lib/response");
 
 const create = (req, res) => {
   req.body.password = passwordToHash(req.body.password);
@@ -145,6 +147,38 @@ const remove = (req, res) => {
     });
 };
 
+const updateProfileImage = (req, res) => {
+  // resim kontrol
+  if (!req?.files?.profile_image) {
+    return res
+      .status(httpStatus.BAD_REQUEST)
+      .send({ error: "doğru dosya yükleyiniz" });
+  }
+
+  // upload islemi
+  const extension = path.extname(req.files.profile_image.name);
+  const fileName = req?.user._id + extension;
+  const folderPath = path.join(__dirname, "../", "uploads/users", fileName);
+  req.files.profile_image.mv(folderPath, function (err) {
+    if (err) {
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ error: err });
+    } else {
+      modify({ _id: req.user._id }, { profile_image: fileName })
+        .then((updatedUser) => {
+          res.status(httpStatus.OK).send(updatedUser);
+        })
+        .catch((err) => {
+          res
+            .status(httpStatus.INTERNAL_SERVER_ERROR)
+            .send({ error: "kayıt olamadı..!!" });
+        });
+    }
+  });
+
+  // db save islemi
+  // response
+};
+
 module.exports = {
   create,
   index,
@@ -154,4 +188,5 @@ module.exports = {
   update,
   remove,
   changePassword,
+  updateProfileImage,
 };
